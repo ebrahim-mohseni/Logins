@@ -22,7 +22,7 @@ namespace Logins.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Logins.Domain.Class.Lookup", b =>
+            modelBuilder.Entity("Logins.Domain.Classes.Lookup", b =>
                 {
                     b.Property<int>("LookupId")
                         .HasColumnType("int");
@@ -89,7 +89,7 @@ namespace Logins.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Logins.Domain.Class.LookupType", b =>
+            modelBuilder.Entity("Logins.Domain.Classes.LookupType", b =>
                 {
                     b.Property<int>("LookupTypeId")
                         .ValueGeneratedOnAdd()
@@ -118,7 +118,7 @@ namespace Logins.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Logins.Domain.Class.Users", b =>
+            modelBuilder.Entity("Logins.Domain.Classes.Users", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
@@ -126,7 +126,25 @@ namespace Logins.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"), 1L, 1);
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("BirthDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("HireDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(500)");
 
@@ -139,14 +157,13 @@ namespace Logins.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Profile")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("PositionId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("SignupDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2022, 9, 1, 11, 14, 39, 558, DateTimeKind.Local).AddTicks(8650));
+                        .HasDefaultValue(new DateTime(2022, 9, 8, 8, 43, 53, 218, DateTimeKind.Local).AddTicks(5283));
 
                     b.Property<int>("UserTypeId")
                         .HasColumnType("int");
@@ -159,11 +176,16 @@ namespace Logins.Data.Migrations
                         new
                         {
                             UserId = -1,
+                            Address = "",
+                            BirthDate = new DateTime(2022, 9, 8, 8, 43, 53, 218, DateTimeKind.Local).AddTicks(6746),
                             Email = "mahdi@goodlawsoftware.co.uk",
+                            FirstName = "mahdi",
+                            HireDate = new DateTime(2022, 9, 8, 8, 43, 53, 218, DateTimeKind.Local).AddTicks(6747),
+                            LastName = "joveyni",
                             Locked = false,
                             Password = "47cd985a73d1af0f0ee2283437fb0176",
-                            Profile = "",
-                            SignupDate = new DateTime(2022, 9, 1, 11, 14, 39, 558, DateTimeKind.Local).AddTicks(9509),
+                            PositionId = 0,
+                            SignupDate = new DateTime(2022, 9, 8, 8, 43, 53, 218, DateTimeKind.Local).AddTicks(6737),
                             UserTypeId = 0
                         });
                 });

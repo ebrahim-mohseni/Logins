@@ -1,4 +1,4 @@
-﻿using Logins.Domain.Class;
+﻿using Logins.Domain.Classes;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Logins.Domain.Config
+namespace Logins.Domain.Configs
 {
     public class LookupConfig : IEntityTypeConfiguration<Lookup>
     {

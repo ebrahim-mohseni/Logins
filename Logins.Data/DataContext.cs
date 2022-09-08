@@ -1,5 +1,5 @@
-﻿using Logins.Domain.Class;
-using Logins.Domain.Config;
+﻿using Logins.Domain.Classes;
+using Logins.Domain.Configs;
 using Microsoft.EntityFrameworkCore;
 
 namespace Logins.Data

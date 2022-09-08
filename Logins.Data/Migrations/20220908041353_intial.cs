@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Logins.Data.Migrations
 {
-    public partial class initial : Migration
+    public partial class intial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -44,8 +44,13 @@ namespace Logins.Data.Migrations
                     Email = table.Column<string>(type: "nvarchar(500)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserTypeId = table.Column<int>(type: "int", nullable: false),
-                    Profile = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SignupDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2022, 9, 1, 11, 14, 39, 558, DateTimeKind.Local).AddTicks(8650)),
+                    FirstName = table.Column<string>(type: "nvarchar(500)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(500)", nullable: false),
+                    PositionId = table.Column<int>(type: "int", nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    HireDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SignupDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2022, 9, 8, 8, 43, 53, 218, DateTimeKind.Local).AddTicks(5283)),
                     Locked = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
@@ -79,8 +84,8 @@ namespace Logins.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserId", "Email", "Password", "Profile", "SignupDate", "UserTypeId" },
-                values: new object[] { -1, "mahdi@goodlawsoftware.co.uk", "47cd985a73d1af0f0ee2283437fb0176", "", new DateTime(2022, 9, 1, 11, 14, 39, 558, DateTimeKind.Local).AddTicks(9509), 0 });
+                columns: new[] { "UserId", "Address", "BirthDate", "Email", "FirstName", "HireDate", "LastName", "Password", "PositionId", "SignupDate", "UserTypeId" },
+                values: new object[] { -1, "", new DateTime(2022, 9, 8, 8, 43, 53, 218, DateTimeKind.Local).AddTicks(6746), "mahdi@goodlawsoftware.co.uk", "mahdi", new DateTime(2022, 9, 8, 8, 43, 53, 218, DateTimeKind.Local).AddTicks(6747), "joveyni", "47cd985a73d1af0f0ee2283437fb0176", 0, new DateTime(2022, 9, 8, 8, 43, 53, 218, DateTimeKind.Local).AddTicks(6737), 0 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
