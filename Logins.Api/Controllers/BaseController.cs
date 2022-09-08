@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Logins.Api.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[action]")]
     [ApiController]
     public class BaseController<T> : ControllerBase

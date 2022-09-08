@@ -11,6 +11,29 @@ namespace Logins.Api.Controllers
 
         }
 
+
+        [HttpGet]
+        [ActionName("UserType")]
+        public async Task<IActionResult> GetUserTypeList()
+        {            
+            var result = await Service.GetUserTypeList();
+            if (result.HasError)
+                return NotFound(result);
+            else
+                return Ok(result);
+        }
+
+        [HttpGet]
+        [ActionName("UserPosition")]
+        public async Task<IActionResult> GetUserPositionList()
+        {
+            var result = await Service.GetUserPositionList();
+            if (result.HasError)
+                return NotFound(result);
+            else
+                return Ok(result);
+        }
+
         [HttpGet]
         [ActionName("Users")]
         public async Task<IActionResult> GetUserList()
@@ -22,7 +45,7 @@ namespace Logins.Api.Controllers
                 return Ok(result);
         }
 
-        [HttpPost]
+        [HttpGet]
         [ActionName("UsersProfile")]
         public async Task<IActionResult> GetUserProfile(string id)
         {
@@ -35,10 +58,10 @@ namespace Logins.Api.Controllers
         }
 
         [HttpGet]
-        [ActionName("AddNewUser")]
+        [ActionName("NewUser")]
         public async Task<IActionResult> AddNewUser()
         {
-            var result = await Service.GetUsers();
+            var result = await Service.AddNewUser();
             if (result.HasError)
                 return NotFound(result);
             else
@@ -47,7 +70,7 @@ namespace Logins.Api.Controllers
 
         [HttpPost]
         [ActionName("CreateUser")]
-        public async Task<IActionResult> CreateUser(NewUserDto input)
+        public async Task<IActionResult> CreateUser(CreateUserDto input)
         {
             var result = await Service.CreateUser(input);
             if (result.HasError)
@@ -58,7 +81,7 @@ namespace Logins.Api.Controllers
 
         [HttpPost]
         [ActionName("UpdateUser")]
-        public async Task<IActionResult> UpdateUser(UserDto input)
+        public async Task<IActionResult> UpdateUser(UpdateUserDto input)
         {
             var result = await Service.UpdateUser(input);
             if (result.HasError)
@@ -67,11 +90,13 @@ namespace Logins.Api.Controllers
                 return Ok(result);
         }
 
-        [HttpPost]
+
+        [HttpGet]
         [ActionName("DeleteUser")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var result = await Service.DeleteUser(id);
+
             if (result.HasError)
                 return NotFound(result);
             else

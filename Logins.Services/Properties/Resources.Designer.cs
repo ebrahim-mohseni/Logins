@@ -77,5 +77,14 @@ namespace Logins.ApiService.Properties {
                 return ResourceManager.GetString("NoFoundMessage", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An account with email address &quot;{0}&quot; already exist..
+        /// </summary>
+        internal static string UserExistMessage {
+            get {
+                return ResourceManager.GetString("UserExistMessage", resourceCulture);
+            }
+        }
     }
 }

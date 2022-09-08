@@ -1,0 +1,136 @@
+﻿@page "/UpdateUser/{id}"
+@inject IUserClientService UserService
+@inject NavigationManager NavigationManager
+@attribute [Authorize]
+
+<h3>Update User</h3>
+<hr />
+<div class="col-12 row" style="text-align:left; font-weight:bold">
+	<span class="col-12" style="color:red">@ServiceMesssage</span>
+</div>
+<EditForm Model="CurrentUser" OnValidSubmit="OnValidSubmit">
+	<FluentValidationValidator />
+	<ValidationSummary />
+	<div class="form-group">
+		<label class="col-form-label">Email: </label>
+		<div class="col-md-3">
+			<InputText class="form-control" @bind-Value="@CurrentUser.Email" readonly></InputText>
+			<ValidationMessage For="@(()=> CurrentUser.Email)" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-form-label">UserType: </label>
+		<div class="col-md-3">
+			<InputSelect @bind-Value="CurrentUser.UserTypeId" class="form-select">
+				@foreach (var lookup in UserService.UserTypeList)
+				{
+					<option value="@lookup.Id">@lookup.Caption</option>
+				}
+			</InputSelect>
+			<ValidationMessage For="@(()=> CurrentUser.UserTypeId)" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-form-label">FirstName: </label>
+		<div class="col-md-3">
+			<InputText class="form-control" @bind-Value="@CurrentUser.FirstName"></InputText>
+			<ValidationMessage For="@(()=> CurrentUser.FirstName)" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-form-label">LastName: </label>
+		<div class="col-md-3">
+			<InputText class="form-control" @bind-Value="@CurrentUser.LastName"></InputText>
+			<ValidationMessage For="@(()=> CurrentUser.LastName)" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-form-label">BirthDate: </label>
+		<div class="col-md-3">
+			<InputDate class="form-control" @bind-Value="CurrentUser.BirthDate"></InputDate>
+			<ValidationMessage For="@(()=> CurrentUser.BirthDate)" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-form-label">HireDate: </label>
+		<div class="col-md-3">
+			<InputDate class="form-control" @bind-Value="CurrentUser.HireDate"></InputDate>
+			<ValidationMessage For="@(()=> CurrentUser.HireDate)" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-form-label">Position: </label>
+		<div class="col-md-3">
+			<InputSelect @bind-Value="CurrentUser.PositionId" class="form-select">
+				@foreach (var lookup in UserService.PositionList)
+				{
+					<option value="@lookup.Id">@lookup.Caption</option>
+				}
+			</InputSelect>
+			<ValidationMessage For="@(()=> CurrentUser.PositionId)" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-form-label">Address: </label>
+		<div class="col-md-3">
+			<InputTextArea class="form-control" @bind-Value="CurrentUser.Address"></InputTextArea>
+			<ValidationMessage For="@(()=> CurrentUser.Address)" />
+		</div>
+	</div>
+
+	<br />
+	<button type="submit" title="Save" class="btn btn-success">Save</button>
+	<button class="btn btn-warning" title="Return" @onclick="(() => ReturnToUsers())">Return</button>
+</EditForm>
+@code {
+	[Parameter]
+	public string id { get; set; }
+	public string ServiceMesssage { get; set; } = string.Empty;
+	public UpdateUserDto CurrentUser = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		await UserService.GetUserType();
+		await UserService.GetPosition();
+	}
+
+	protected override async Task OnParametersSetAsync()
+	{
+		var result = await UserService.GetUserProfile(id);
+		if (!result.HasError)
+		{
+			CurrentUser = result.Data;
+		}
+		else
+		{
+			NavigationManager.NavigateTo("Error");
+		}
+
+	}
+
+	async Task OnValidSubmit()
+	{
+		var result = await UserService.UpdateUser(CurrentUser);
+		if (!result.HasError)
+		{
+			NavigationManager.NavigateTo("Users");
+		}
+		else
+		{
+			ServiceMesssage = result.Message;
+		}
+
+	}
+
+	void ReturnToUsers()
+	{
+		NavigationManager.NavigateTo("Users");
+	}
+}

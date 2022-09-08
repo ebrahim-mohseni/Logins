@@ -1,19 +1,23 @@
 ﻿using Logins.Model;
 using Logins.Model.DTO;
 
-namespace Logins.ApiService.Interfaces
+namespace Logins.ClientService.Interfaces
 {
-    public interface IUserService
+    public interface IUserClientService
     {
-        Task<ServiceResult<List<LookupDto>>> GetUserTypeList();
-        Task<ServiceResult<List<LookupDto>>> GetUserPositionList();
+        List<LookupDto> UserTypeList { get; set; }
+        List<LookupDto> PositionList { get; set; }
+
+        Task GetUserType();
+        Task GetPosition();
+
         Task<ServiceResult<List<UserListDto>>> GetUsers();
         Task<ServiceResult<UpdateUserDto>> GetUserProfile(string id);
         Task<ServiceResult<CreateUserDto>> AddNewUser();
         Task<ServiceResult<bool>> CreateUser(CreateUserDto input);
         Task<ServiceResult<bool>> UpdateUser(UpdateUserDto input);
         Task<ServiceResult<bool>> DeleteUser(string id);
-        Task<ServiceResult<bool>> ChangePassowrd(ChangePasswordDto password);
+        Task<ServiceResult<bool>> ChangePassowrd(ChangePasswordDto input);
 
     }
 }

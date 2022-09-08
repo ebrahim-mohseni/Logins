@@ -9,6 +9,7 @@ using Logins.Model.DTO;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Data;
+using System.Linq.Expressions;
 
 namespace Logins.ApiService.Services
 {
@@ -19,6 +20,51 @@ namespace Logins.ApiService.Services
         public UserService(IMapper mapper, DataContext contex) : base(contex)
         {
             _mapper = mapper;
+        }
+
+        public async Task<ServiceResult<List<LookupDto>>> GetUserTypeList()
+        {
+            var output = new ServiceResult<List<LookupDto>>();
+            try
+            {
+                output.Data = await (from l in Context.Lookup
+                                     where l.LookupTypeId == (int)EnumLookup.UserType
+                                     select new LookupDto
+                                     {
+                                         Id = l.LookupId,
+                                         Caption = l.Caption
+                                     }).ToListAsync();                ;
+
+                output.SeInformation("GetUserPositionList");
+            }
+            catch (Exception ex)
+            {
+                output.SetException(ex, "GetUserProfile");
+            }
+
+            return output;
+        }
+        public async Task<ServiceResult<List<LookupDto>>> GetUserPositionList()
+        {
+            var output = new ServiceResult<List<LookupDto>>();
+            try
+            {
+                output.Data = await (from l in Context.Lookup
+                                     where l.LookupTypeId == (int)EnumLookup.Position
+                                     select new LookupDto
+                                     {
+                                         Id = l.LookupId,
+                                         Caption = l.Caption
+                                     }).ToListAsync(); ;
+
+                output.SeInformation("GetUserPositionList");
+            }
+            catch (Exception ex)
+            {
+                output.SetException(ex, "GetUserPositionList");
+            }
+
+            return output;
         }
 
         public async Task<ServiceResult<List<UserListDto>>> GetUsers()
@@ -56,24 +102,7 @@ namespace Logins.ApiService.Services
             var output = new ServiceResult<CreateUserDto>();
             try
             {
-                output.Data = new CreateUserDto
-                {
-                    UserTypeList = await (from l in Context.Lookup
-                                          where l.LookupTypeId == (int)EnumLookup.UserType
-                                          select new LookupDto
-                                          {
-                                              Id = l.LookupId,
-                                              Caption = l.Caption
-                                          }).ToListAsync(),
-
-                    PositionList = await (from l in Context.Lookup
-                                          where l.LookupTypeId == (int)EnumLookup.Position
-                                          select new LookupDto
-                                          {
-                                              Id = l.LookupId,
-                                              Caption = l.Caption
-                                          }).ToListAsync()
-                };
+                output.Data = new CreateUserDto();
 
                 output.SeInformation("GetUserProfile");
             }
@@ -92,23 +121,6 @@ namespace Logins.ApiService.Services
             {
                 Users? result = await Context.Users.FindAsync(Convert.ToInt32(EncryptHelper.Decrypt(id)));
                 output.Data = _mapper.Map<UpdateUserDto>(result);
-
-                output.Data.UserTypeList = await (from l in Context.Lookup
-                                                     where l.LookupTypeId == (int)EnumLookup.UserType
-                                                     select new LookupDto
-                                                     {
-                                                         Id = l.LookupId,
-                                                         Caption = l.Caption
-                                                     }).ToListAsync();
-
-                output.Data.PositionList = await (from l in Context.Lookup
-                                                     where l.LookupTypeId == (int)EnumLookup.Position
-                                                     select new LookupDto
-                                                     {
-                                                         Id = l.LookupId,
-                                                         Caption = l.Caption
-                                                     }).ToListAsync();
-
                 output.SeInformation("GetUserProfile");
             }
             catch (Exception ex)
@@ -119,16 +131,27 @@ namespace Logins.ApiService.Services
             return output;
         }
 
-        public async Task<ServiceResult<bool>> CreateUser(NewUserDto input)
+        public async Task<ServiceResult<bool>> CreateUser(CreateUserDto input)
         {
             var output = new ServiceResult<bool>();
             try
-            {
+            {                
                 Users users = _mapper.Map<Users>(input);
-                Context.Users.Add(users);
-                await Context.SaveChangesAsync();
-                output.SeInformation("CreateUser");
 
+                var existuser = await Context.Users.Where(p => p.Email.ToLower() == users.Email).FirstOrDefaultAsync();
+
+                if(existuser != null)
+                {
+                    output.SetDebug("CreateUser", 
+                        string.Format(Resources.UserExistMessage, existuser.Email), 
+                        JsonConvert.SerializeObject(existuser));
+                }
+                else
+                {
+                    Context.Users.Add(users);
+                    await Context.SaveChangesAsync();
+                    output.SeInformation("CreateUser");
+                }
             }
             catch (Exception ex)
             {
@@ -138,7 +161,7 @@ namespace Logins.ApiService.Services
             return output;
         }
 
-        public async Task<ServiceResult<bool>> UpdateUser(UserDto input)
+        public async Task<ServiceResult<bool>> UpdateUser(UpdateUserDto input)
         {
             var output = new ServiceResult<bool>();
             try
@@ -146,10 +169,13 @@ namespace Logins.ApiService.Services
                 Users user = _mapper.Map<Users>(input);
 
                 Context.Users.Attach(user);
-                Context.Entry(user).Property(x => x.Email).IsModified = false;
-                Context.Entry(user).Property(x => x.Password).IsModified = false;
-                Context.Entry(user).Property(x => x.SignupDate).IsModified = false;
-                Context.Entry(user).Property(x => x.Locked).IsModified = false;
+                Context.Entry(user).Property(x => x.UserTypeId).IsModified = true; ;
+                Context.Entry(user).Property(x => x.FirstName).IsModified = true;;
+                Context.Entry(user).Property(x => x.LastName).IsModified = true;
+                Context.Entry(user).Property(x => x.PositionId).IsModified = true;
+                Context.Entry(user).Property(x => x.BirthDate).IsModified = true;
+                Context.Entry(user).Property(x => x.HireDate).IsModified = true;
+                Context.Entry(user).Property(x => x.Address).IsModified = true;
                 await Context.SaveChangesAsync();
                 output.SeInformation("UpdateUser");
             }

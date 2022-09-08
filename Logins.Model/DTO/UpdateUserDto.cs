@@ -11,8 +11,5 @@
         public DateTime BirthDate { get; set; }
         public DateTime HireDate { get; set; }
         public string Address { get; set; } = string.Empty;
-
-        public List<LookupDto> PositionList { get; set; }
-        public List<LookupDto> UserTypeList { get; set; }
     }
 }

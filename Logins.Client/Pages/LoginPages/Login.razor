@@ -1,0 +1,67 @@
+﻿@page "/"
+@inject ILoginClientService LoginService
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+@inject ILocalStorageService LocalStorage
+ 
+
+
+<EditForm Model="@login" OnValidSubmit="@OnValidSubmit">
+    <FluentValidationValidator />
+    <ValidationSummary />
+    <div>
+        <br /><br /><br /><br /><br />
+    </div>
+    <div>
+        <h3 style="font-weight:bold; color:Blue">Login</h3>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-12">
+            <InputText class="form-control" @bind-Value="@login.Email"></InputText>
+            <ValidationMessage For="@(()=> login.Email)" />
+        </div>
+    </div>
+    <br />
+    <div class="form-group">
+        <div class="col-md-12">
+            <InputText type="password" class="form-control" @bind-Value="@login.Password"></InputText>
+            <ValidationMessage For="@(()=> login.Password)" />
+        </div>
+    </div>
+
+    <br />
+    <div class="col-12 row">
+        <span class="col-12"></span>
+        <input type="submit" class="form-control col-6 btn btn-primary" value="Login" />
+    </div>
+    <br />
+    <div class="col-12 row" style="text-align:left; font-weight:bold">
+        <span class="col-12" style="color:red">@LoginMesssage</span>
+    </div>
+
+</EditForm>
+
+@code {
+    LoginDto login = new LoginDto();
+    public string LoginMesssage { get; set; } = string.Empty;    
+
+    private async Task<bool> OnValidSubmit()
+    {
+        
+        var result =  await LoginService.Login(login);
+        if (!result.HasError)
+        {
+            await LocalStorage.SetItemAsync("token", result.Data);
+            await AuthStateProvider.GetAuthenticationStateAsync();
+            NavigationManager.NavigateTo("/Users");
+        }
+        else
+        {
+            LoginMesssage = result.Message;
+        }
+
+        return await Task.FromResult(true);
+    }
+
+}

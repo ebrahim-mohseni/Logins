@@ -1,5 +1,6 @@
 ﻿using Logins.ApiService.Interfaces;
 using Logins.Model.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Logins.Api.Controllers
@@ -11,6 +12,7 @@ namespace Logins.Api.Controllers
 
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [ActionName("Login")]
         public async Task<IActionResult> Login(LoginDto input)
